@@ -15,16 +15,17 @@ Mathematically, we call the function which takes an integer as argument and whic
 
 Therefore, we choose to represent a set by its characteristic function and define a type alias for this representation:
 
-
-1
+```
 type Set = Int => Boolean
+```
+
 Using this representation, we define a function that tests for the presence of a value in a set:
 
-
-
-1
+```
 def contains(s: Set, elem: Int): Boolean = s(elem)
-2.1 Basic Functions on Sets
+```
+
+### Basic Functions on Sets
 
 Let’s start by implementing basic functions on sets.
 
