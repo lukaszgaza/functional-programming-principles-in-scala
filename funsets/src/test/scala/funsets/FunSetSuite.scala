@@ -146,4 +146,42 @@ class FunSetSuite extends FunSuite {
       assert(!contains(filter(u, evenFilter), 3), "Filter 3")
     }
   }
+
+  test("forall returns true only if predicate holds for all elements of the set") {
+    new TestSets {
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
+      val u = union(u1, u2)
+      val isPositive = (x: Int) => x > 0
+
+      assert(forall(u, isPositive), "All are positive")
+    }
+  }
+
+  test("exists returns true if predicate holds for at least one element of the set") {
+    new TestSets {
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
+      val u = union(u1, u2)
+      val isEven = (x: Int) => x % 2 == 0
+
+      assert(exists(u, isEven), "At least one even")
+    }
+  }
+
+  test("map applies provided function to each element of the set") {
+    new TestSets {
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
+      val u = union(u1, u2)
+      val mulByTwo = (x: Int) => 2 * x
+
+      assert(!contains(map(u, mulByTwo), 1), "Map 1")
+      assert(contains(map(u, mulByTwo), 2), "Map 2")
+      assert(!contains(map(u, mulByTwo), 3), "Map 3")
+      assert(contains(map(u, mulByTwo), 4), "Map 4")
+      assert(!contains(map(u, mulByTwo), 5), "Map 5")
+      assert(contains(map(u, mulByTwo), 6), "Map 6")
+    }
+  }
 }
