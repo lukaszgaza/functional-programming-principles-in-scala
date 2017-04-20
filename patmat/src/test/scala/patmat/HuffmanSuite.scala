@@ -71,9 +71,37 @@ class HuffmanSuite extends FunSuite {
     assert(decodedSecret === List('h', 'u', 'f', 'f', 'm', 'a', 'n', 'e', 's', 't', 'c', 'o', 'o', 'l'))
   }
 
+  test("encode 101011") {
+    val tree = Fork(Fork(Leaf('c', 1), Leaf('b', 2), List('c', 'b'), 3), Leaf('a', 3), List('c', 'b', 'a'), 6)
+    val decoded = List('a', 'b', 'b', 'a')
+    assert(encode(tree)(decoded) === List(1, 0, 1, 0, 1, 1))
+  }
+
+  test("codeBits") {
+    val codeTable = List(('a', List(1)), ('b', List(0, 1)), ('c', List(0, 0)))
+    assert(codeBits(codeTable)('b') === List(0, 1))
+  }
+
   test("decode and encode a very short text should be identity") {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
+  }
+
+  test("convert") {
+    val tree = Fork(Fork(Leaf('c', 1), Leaf('b', 2), List('c', 'b'), 3), Leaf('a', 3), List('c', 'b', 'a'), 6)
+    val codeTable = List(('a', List(1)), ('b', List(0, 1)), ('c', List(0, 0)))
+    assert(convert(tree).sortBy(_._1) === codeTable)
+  }
+
+  test("merge code tables") {
+    val codeTableOne = List(('a', List(1)), ('b', List(0, 1)), ('c', List(0, 0)))
+    val codeTable = List(('a', List(1)), ('b', List(0, 1)), ('c', List(0, 0)))
+  }
+
+  test("quickEncode 101011") {
+    val tree = Fork(Fork(Leaf('c', 1), Leaf('b', 2), List('c', 'b'), 3), Leaf('a', 3), List('c', 'b', 'a'), 6)
+    val decoded = List('a', 'b', 'b', 'a')
+    assert(quickEncode(tree)(decoded) === List(1, 0, 1, 0, 1, 1))
   }
 }
