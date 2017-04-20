@@ -109,8 +109,8 @@ object Huffman {
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
-
-    case xs :: ys :: Nil => xs :: ys :: Nil
+    case Nil => Nil
+    case xs :: Nil => List(xs)
     case xs :: ys :: zs => normalizeListOfTrees(makeCodeTree(xs, ys), zs)
   }
 
@@ -142,8 +142,8 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-    def until(stopCondition: List[CodeTree] => Boolean, combiner: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] =
-      if (singleton(trees)) trees else until(singleton, combiner)(combiner(trees))
+  def until(stopCondition: List[CodeTree] => Boolean, action: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] =
+    if (singleton(trees)) trees else until(singleton, action)(action(trees))
   
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -151,7 +151,8 @@ object Huffman {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-    def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree =
+    (until(singleton, combine)(makeOrderedLeafList(times(chars)))).head
   
 
   // Part 3: Decoding
@@ -162,7 +163,15 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
+  def decode(root: CodeTree, bits: List[Bit]): List[Char] =  {
+    def decodeHelper(tree: CodeTree, bitsLeft: List[Bit]): List[Char] = tree match {
+      case Leaf(char, _) => char :: decodeHelper(root, bitsLeft)
+      case _ if bitsLeft.isEmpty => Nil
+      case Fork(left, right, _, _) => if (bitsLeft.head == 0) decodeHelper(left, bitsLeft.tail) else decodeHelper(right, bitsLeft.tail)
+    }
+
+    decodeHelper(root, bits)
+  }
   
   /**
    * A Huffman coding tree for the French language.
@@ -180,7 +189,7 @@ object Huffman {
   /**
    * Write a function that returns the decoded secret
    */
-    def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = decode(frenchCode, secret)
   
 
   // Part 4a: Encoding using Huffman tree

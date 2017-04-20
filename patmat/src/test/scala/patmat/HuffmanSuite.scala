@@ -56,6 +56,21 @@ class HuffmanSuite extends FunSuite {
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
 
+  test("should create optimal CodeTree for provided text") {
+    val text = "aababc"
+    assert(createCodeTree(string2Chars(text)) === Fork(Fork(Leaf('c', 1), Leaf('b', 2), List('c', 'b'), 3), Leaf('a', 3), List('c', 'b', 'a'), 6))
+  }
+
+  test("decode word 'abba'") {
+    val tree = Fork(Fork(Leaf('c', 1), Leaf('b', 2), List('c', 'b'), 3), Leaf('a', 3), List('c', 'b', 'a'), 6)
+    val encoded = List(1, 0, 1, 0, 1, 1)
+    assert(decode(tree, encoded) === List('a', 'b', 'b', 'a'))
+  }
+
+  test("decoded french secret") {
+    assert(decodedSecret === List('h', 'u', 'f', 'f', 'm', 'a', 'n', 'e', 's', 't', 'c', 'o', 'o', 'l'))
+  }
+
   test("decode and encode a very short text should be identity") {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
