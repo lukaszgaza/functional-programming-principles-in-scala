@@ -1,5 +1,7 @@
 package forcomp
 
+import forcomp.Anagrams.sentenceOccurrences
+
 
 object Anagrams {
 
@@ -168,5 +170,17 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def sentenceAnagramsHelper(occurrences: Occurrences): List[Sentence] =
+    if (occurrences.isEmpty) List(List())
+    else
+      for {
+        occurrence <- combinations(occurrences)
+        word <- dictionaryByOccurrences(occurrence)
+        rest <- sentenceAnagramsHelper(subtract(occurrences, occurrence))
+      } yield word :: rest
+
+
+    sentenceAnagramsHelper(sentenceOccurrences(sentence))
+  }
 }
